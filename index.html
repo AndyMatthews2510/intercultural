@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reading the Room — Intercultural Communication in Business</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --deep:#0F2A43;
+    --deep-2:#16374F;
+    --deep-3:#1D4763;
+    --surface:#EAF3F5;
+    --card:#FFFFFF;
+    --ink:#16232C;
+    --ink-soft:#51707C;
+    --teal:#1F6F78;
+    --gold:#D9A441;
+    --gold-deep:#9C7220;
+    --correct:#2E7D5B;
+    --correct-bg:#E4F3EC;
+    --incorrect:#B5453D;
+    --incorrect-bg:#FBEAE8;
+    --border:#D7E1E4;
+    --border-deep:#2A4F6C;
+    --font-display:'Fraunces', serif;
+    --font-body:'Inter', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+  body{
+    margin:0; background:var(--surface); color:var(--ink);
+    font-family:var(--font-body); line-height:1.6; font-size:17px;
+  }
+  h1,h2,h3{font-family:var(--font-display); color:var(--ink); margin:0 0 0.4em;}
+  p{margin:0 0 1em;}
+  .wrap{max-width:760px; margin:0 auto; padding:0 28px;}
+  .wrap-wide{max-width:960px; margin:0 auto; padding:0 28px;}
+
+  /* Progress bar */
+  #progress-track{position:fixed; top:0; left:0; width:100%; height:4px; background:rgba(15,42,67,0.08); z-index:60;}
+  #progress-fill{height:100%; width:0%; background:var(--gold); transition:width 0.08s linear;}
+
+  /* Floating score badge */
+  #score-badge{
+    position:fixed; top:16px; right:16px; z-index:59;
+    background:var(--deep); color:#fff; font-family:var(--font-body);
+    font-weight:600; font-size:13.5px; padding:9px 16px; border-radius:999px;
+    box-shadow:0 4px 14px rgba(15,42,67,0.28); display:flex; align-items:center; gap:8px;
+    opacity:0; transform:translateY(-8px); transition:opacity 0.3s ease, transform 0.3s ease;
+    pointer-events:none;
+  }
+  #score-badge.show{opacity:1; transform:translateY(0);}
+  #score-badge .dot{width:7px; height:7px; border-radius:50%; background:var(--gold);}
+
+  /* Hero */
+  header.hero{
+    background:var(--deep); color:#fff; padding:110px 0 90px; position:relative; overflow:hidden;
+  }
+  header.hero::before{
+    content:""; position:absolute; right:-120px; top:-120px; width:420px; height:420px;
+    border-radius:50%; border:1px solid rgba(217,164,65,0.18);
+  }
+  header.hero::after{
+    content:""; position:absolute; right:-40px; top:-40px; width:220px; height:220px;
+    border-radius:50%; border:1px solid rgba(217,164,65,0.14);
+  }
+  .hero-eyebrow{font-family:var(--font-body); font-weight:600; color:var(--gold); font-size:14.5px; margin-bottom:18px;}
+  header.hero h1{font-size:clamp(2.1rem, 5vw, 3.4rem); color:#fff; font-weight:700; max-width:11ch; line-height:1.08;}
+  header.hero .sub{font-size:18px; color:#C7D8E4; max-width:52ch; margin-top:18px;}
+  .begin-link{
+    display:inline-flex; align-items:center; gap:10px; margin-top:38px; color:var(--gold);
+    text-decoration:none; font-weight:600; font-size:15px; border-bottom:1px solid rgba(217,164,65,0.4);
+    padding-bottom:4px;
+  }
+  .begin-link svg{transition:transform 0.2s ease;}
+  .begin-link:hover svg{transform:translateY(3px);}
+
+  /* Module (teaching) sections — light */
+  section.module{padding:86px 0 64px; position:relative;}
+  .module-kicker{font-family:var(--font-body); font-size:14.5px; font-weight:600; color:var(--teal); margin-bottom:10px;}
+  section.module h2{font-size:clamp(1.7rem, 3.4vw, 2.3rem); max-width:22ch;}
+  .module-lede{font-size:17.5px; color:var(--ink-soft); max-width:58ch; margin-top:10px;}
+  .module-body{margin-top:34px;}
+  .module-body p{max-width:64ch; font-size:16.5px;}
+
+  /* Callout / card styles */
+  .callout{background:#fff; border:1px solid var(--border); border-radius:10px; padding:24px 26px; margin:26px 0;}
+  .callout.gold{background:#FBF1DE; border-color:#EBD8AF;}
+  .callout.navy{background:var(--deep); color:#fff; border:none;}
+  .callout strong.label{display:block; font-size:12.5px; letter-spacing:0.03em; color:var(--gold-deep); margin-bottom:8px; font-weight:700;}
+  .callout.navy strong.label{color:var(--gold);}
+
+  .email-card{background:#fff; border:1px solid var(--border); border-radius:10px; padding:28px 30px; margin:26px 0; font-size:15.5px;}
+  .email-card .meta{color:var(--ink-soft); font-size:14px; margin-bottom:14px;}
+  .email-card .emphasis{font-weight:600;}
+
+  /* Iceberg visual */
+  .iceberg-wrap{display:flex; gap:40px; align-items:center; margin:32px 0; flex-wrap:wrap;}
+  .iceberg-svg{flex:0 0 260px; width:260px;}
+  .iceberg-text{flex:1; min-width:240px;}
+  .iceberg-text .visible-tag, .iceberg-text .invisible-tag{font-weight:700; font-size:14px;}
+  .iceberg-text .visible-tag{color:var(--deep);}
+  .iceberg-text .invisible-tag{color:var(--teal);}
+  .iceberg-text .row{margin-bottom:20px;}
+
+  /* Table */
+  table.ref-table{width:100%; border-collapse:collapse; margin:26px 0; font-size:15px;}
+  table.ref-table th, table.ref-table td{padding:13px 16px; border:1px solid var(--border); text-align:left; vertical-align:top;}
+  table.ref-table th{background:var(--deep); color:#fff; font-family:var(--font-body); font-weight:600; font-size:14px;}
+  table.ref-table tr:nth-child(even) td{background:#F3F7F8;}
+
+  /* Spectrum */
+  .spectrum{margin:26px 0;}
+  .spectrum .sp-name{font-weight:700; font-size:15px; margin-bottom:8px;}
+  .spectrum .sp-track{position:relative; height:5px; background:var(--border); border-radius:3px; margin:6px 0;}
+  .spectrum .sp-dot{position:absolute; top:50%; width:16px; height:16px; background:var(--gold); border:3px solid #fff; box-shadow:0 0 0 1px var(--border); border-radius:50%; transform:translate(-50%,-50%);}
+  .spectrum .sp-ends{display:flex; justify-content:space-between; font-size:13.5px; color:var(--ink-soft); gap:20px;}
+  .spectrum .sp-ends span:last-child{color:var(--teal); font-weight:600; text-align:right;}
+
+  /* Cards grid (frameworks signpost) */
+  .fw-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:18px; margin:30px 0;}
+  .fw-card{background:#fff; border:1px solid var(--border); border-radius:10px; padding:22px;}
+  .fw-card .num{display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; border-radius:50%; color:#fff; font-family:var(--font-display); font-weight:700; margin-bottom:14px;}
+  .fw-card h3{font-size:19px; margin-bottom:2px;}
+  .fw-card .tool-sub{font-size:13.5px; font-weight:600; margin-bottom:12px;}
+  .fw-card p{font-size:14.5px; color:var(--ink-soft); font-style:italic; margin:0;}
+
+  /* Decision rule */
+  .rule-row{display:flex; justify-content:space-between; align-items:center; gap:16px; padding:16px 0; border-bottom:1px solid var(--border);}
+  .rule-row:last-child{border-bottom:none;}
+  .rule-row .prob{font-size:15px;}
+  .rule-tag{flex:0 0 auto; color:#fff; font-weight:700; font-size:13px; padding:8px 18px; border-radius:6px; white-space:nowrap;}
+
+  /* CQ steps */
+  .cq-row{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:28px 0;}
+  .cq-step{background:var(--deep); color:#fff; border-radius:10px; padding:18px 14px; text-align:center;}
+  .cq-step .n{width:30px; height:30px; border-radius:50%; background:var(--gold); color:var(--deep); font-weight:700; font-family:var(--font-display); display:flex; align-items:center; justify-content:center; margin:0 auto 10px;}
+  .cq-step .name{font-weight:700; font-size:14.5px; margin-bottom:6px;}
+  .cq-step .desc{font-size:12.5px; color:#C7D8E4; line-height:1.4;}
+  @media (max-width:640px){.cq-row{grid-template-columns:1fr 1fr;}}
+
+  /* Quiz section — deep */
+  .quiz-zone{background:var(--deep); padding:56px 0 62px; margin-top:56px;}
+  .quiz-zone .quiz-intro{color:#C7D8E4; font-size:14.5px; font-weight:600; margin-bottom:22px; display:flex; align-items:center; gap:10px;}
+  .quiz-intro .pulse{width:8px; height:8px; border-radius:50%; background:var(--gold); flex:0 0 auto;}
+  .q-card{background:var(--deep-2); border:1px solid var(--border-deep); border-radius:12px; padding:28px 26px; margin-bottom:20px;}
+  .q-card .q-text{color:#fff; font-size:17px; font-weight:600; margin-bottom:20px; font-family:var(--font-display);}
+  .q-options{display:grid; gap:10px;}
+  .q-option{
+    text-align:left; background:var(--deep-3); border:1px solid var(--border-deep); color:#fff;
+    padding:13px 16px; border-radius:8px; font-family:var(--font-body); font-size:15px; cursor:pointer;
+    transition:background 0.15s ease, border-color 0.15s ease; display:flex; align-items:center; gap:12px;
+  }
+  .q-option:hover:not(:disabled){background:#254F6C;}
+  .q-option:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+  .q-option .letter{flex:0 0 auto; width:22px; height:22px; border-radius:50%; border:1px solid rgba(255,255,255,0.4); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700;}
+  .q-option:disabled{cursor:default;}
+  .q-option.correct{background:var(--correct); border-color:var(--correct);}
+  .q-option.incorrect{background:var(--incorrect); border-color:var(--incorrect);}
+  .q-option.faded:not(.correct):not(.incorrect){opacity:0.45;}
+  .q-feedback{margin-top:16px; padding:14px 16px; border-radius:8px; font-size:14.5px; display:none; line-height:1.55;}
+  .q-feedback.show{display:block;}
+  .q-feedback.right{background:var(--correct-bg); color:#1D5B41;}
+  .q-feedback.wrong{background:var(--incorrect-bg); color:#8C332C;}
+  .q-feedback strong{font-weight:700;}
+
+  /* Summary */
+  #summary{background:var(--surface); padding:90px 0 110px;}
+  #summary h2{font-size:clamp(1.8rem,4vw,2.6rem);}
+  .score-ring-wrap{display:flex; align-items:center; gap:34px; flex-wrap:wrap; margin:36px 0 44px;}
+  #score-ring{flex:0 0 auto;}
+  .score-line{font-size:16px; color:var(--ink-soft); max-width:44ch;}
+  .breakdown{display:grid; gap:12px;}
+  .breakdown-row{display:flex; align-items:center; gap:16px; background:#fff; border:1px solid var(--border); border-radius:8px; padding:14px 18px;}
+  .breakdown-row .bname{flex:0 0 190px; font-weight:600; font-size:14.5px;}
+  .breakdown-row .btrack{flex:1; height:8px; background:var(--border); border-radius:4px; overflow:hidden;}
+  .breakdown-row .bfill{height:100%; background:var(--teal); border-radius:4px;}
+  .breakdown-row .bscore{flex:0 0 54px; text-align:right; font-size:14px; color:var(--ink-soft); font-weight:600;}
+  #retake-btn{
+    margin-top:38px; background:var(--deep); color:#fff; border:none; padding:14px 28px; border-radius:8px;
+    font-family:var(--font-body); font-weight:600; font-size:15px; cursor:pointer;
+  }
+  #retake-btn:hover{background:var(--deep-3);}
+
+  footer{padding:34px 0; text-align:center; color:var(--ink-soft); font-size:13.5px;}
+
+  @media (max-width:640px){
+    header.hero{padding:80px 0 64px;}
+    section.module{padding:60px 0 44px;}
+    .iceberg-wrap{gap:24px;}
+    .iceberg-svg{flex-basis:180px; width:180px;}
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-track"><div id="progress-fill"></div></div>
+<div id="score-badge"><span class="dot"></span><span id="score-badge-text">Score: 0 / 24</span></div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-eyebrow">EFFECTIVE BUSINESS COMMUNICATION</div>
+    <h1>Reading the Room</h1>
+    <p class="sub">A short, self-paced module on intercultural communication in business — work through it in order. Each idea is followed by a quick check, so you'll know immediately whether it's landed.</p>
+    <a class="begin-link" href="#hook">
+      Start with the warm-up
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v11M3 9l5 5 5-5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+</header>
+
+<!-- MODULE: HOOK -->
+<section class="module" id="hook">
+  <div class="wrap">
+    <div class="module-kicker">Before we start</div>
+    <h2>The same situation, read differently</h2>
+    <p class="module-lede">Here's an email you receive after your first meeting with a new client. Read it once, and form a first impression before you go any further.</p>
+    <div class="module-body">
+      <div class="email-card">
+        <div class="meta">To: Sarah.Lee@globalaudit.com<br>Subject: Re: Our meeting last Tuesday</div>
+        <p>Dear Ms. Lee,</p>
+        <p>Thank you very much for taking the time to meet with us. Your presentation was very interesting and we appreciate your efforts.</p>
+        <p class="emphasis">We will need to study this proposal more carefully before we can proceed further. We will be in touch when the time is right.</p>
+        <p>With best regards,<br>Tanaka Kenji</p>
+      </div>
+      <p>Is this good news or bad news? Hold your answer in your head — you'll find out how well it holds up in a moment.</p>
+    </div>
+  </div>
+  <div class="quiz-zone">
+    <div class="wrap">
+      <div class="quiz-intro"><span class="pulse"></span>QUICK CHECK</div>
+      <div class="quiz-block" data-module="hook"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE: ICEBERG -->
+<section class="module" id="iceberg">
+  <div class="wrap">
+    <div class="module-kicker">The core idea</div>
+    <h2>Culture is like an iceberg</h2>
+    <p class="module-lede">Most of what we notice about another culture is the small part above the waterline. The part that actually causes misunderstandings is almost always underneath.</p>
+    <div class="module-body">
+      <div class="iceberg-wrap">
+        <svg class="iceberg-svg" viewBox="0 0 260 260" aria-hidden="true">
+          <rect x="0" y="130" width="260" height="130" fill="#DCEEF2"/>
+          <polygon points="130,40 175,130 85,130" fill="#0F2A43"/>
+          <polygon points="130,255 230,132 30,132" fill="#1F6F78"/>
+          <line x1="0" y1="130" x2="260" y2="130" stroke="#D9A441" stroke-width="2.5" stroke-dasharray="7 6"/>
+        </svg>
+        <div class="iceberg-text">
+          <div class="row">
+            <div class="visible-tag">VISIBLE</div>
+            <p>Language, food, clothing, customs, greetings — the things you'd list if someone asked "what's the culture like?"</p>
+          </div>
+          <div class="row">
+            <div class="invisible-tag">INVISIBLE — BUT SHAPES EVERYTHING</div>
+            <p>Values about time and relationships. Attitudes to hierarchy and authority. What counts as rude or polite. How disagreement is supposed to be expressed.</p>
+          </div>
+        </div>
+      </div>
+      <div class="callout navy"><strong class="label">Worth remembering</strong>Most cross-cultural misunderstandings happen below the surface — not because people are being difficult, but because the rules they're following were never visible to begin with.</div>
+    </div>
+  </div>
+  <div class="quiz-zone">
+    <div class="wrap">
+      <div class="quiz-intro"><span class="pulse"></span>QUICK CHECK</div>
+      <div class="quiz-block" data-module="iceberg"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE: THREE FRAMEWORKS -->
+<section class="module" id="frameworks">
+  <div class="wrap">
+    <div class="module-kicker">Three angles</div>
+    <h2>Three researchers, three questions</h2>
+    <p class="module-lede">To make sense of what's under the waterline, this module leans on three well-known frameworks. Each one asks a different question about the same underlying problem.</p>
+    <div class="module-body">
+      <div class="fw-grid">
+        <div class="fw-card">
+          <div class="num" style="background:#0F2A43;">1</div>
+          <h3>Edward Hall</h3>
+          <div class="tool-sub" style="color:#0F2A43;">High vs. Low Context</div>
+          <p>How directly do people communicate meaning?</p>
+        </div>
+        <div class="fw-card">
+          <div class="num" style="background:#1F6F78;">2</div>
+          <h3>Geert Hofstede</h3>
+          <div class="tool-sub" style="color:#1F6F78;">Cultural Dimensions</div>
+          <p>What do people in a society value most?</p>
+        </div>
+        <div class="fw-card">
+          <div class="num" style="background:#9C7220;">3</div>
+          <h3>Erin Meyer</h3>
+          <div class="tool-sub" style="color:#9C7220;">The Culture Map</div>
+          <p>How do people behave in business settings specifically?</p>
+        </div>
+      </div>
+      <p style="font-style:italic; color:var(--ink-soft); font-size:15px;">Treat all three as tools, not rules. Real people are always more complex than any model — including the people you'll meet in the case scenarios later.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE: HALL -->
+<section class="module" id="hall">
+  <div class="wrap">
+    <div class="module-kicker">Framework 1</div>
+    <h2>Hall — high vs. low context</h2>
+    <p class="module-lede">How much meaning is carried by the words themselves, versus everything around them — tone, silence, relationship, history?</p>
+    <div class="module-body">
+      <table class="ref-table">
+        <tr><th>Concept</th><th>Low-context (USA, UK, Germany, Australia)</th><th>High-context (Japan, China, Thailand, Korea)</th></tr>
+        <tr><td><strong>Meaning</strong></td><td>Explicit — say what you mean.</td><td>Implicit — what is <em>not</em> said matters too.</td></tr>
+        <tr><td><strong>Silence</strong></td><td>Can feel awkward or unclear.</td><td>Comfortable and meaningful — no need to rush to fill it.</td></tr>
+        <tr><td><strong>"No"</strong></td><td>Said clearly and directly.</td><td>Rarely direct — watch for vague answers or a change of topic.</td></tr>
+      </table>
+      <div class="callout gold"><strong class="label">Try this</strong>"That may be a little difficult" can be a serious warning, not a small problem. A nod may mean "I am listening," not "I agree."</div>
+      <p>Thailand sits firmly on the high-context side of this scale. Go back and reread the warm-up email with that lens — see how many high-context signals you can now spot.</p>
+    </div>
+  </div>
+  <div class="quiz-zone">
+    <div class="wrap">
+      <div class="quiz-intro"><span class="pulse"></span>QUICK CHECK</div>
+      <div class="quiz-block" data-module="hall"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE: HOFSTEDE -->
+<section class="module" id="hofstede">
+  <div class="wrap">
+    <div class="module-kicker">Framework 2</div>
+    <h2>Hofstede — what do people value?</h2>
+    <p class="module-lede">Four dimensions that shape workplace behaviour more than most people realise, until they run into the mismatch firsthand.</p>
+    <div class="module-body">
+      <div class="spectrum">
+        <div class="sp-name">Power Distance</div>
+        <div class="sp-track"><div class="sp-dot" style="left:78%;"></div></div>
+        <div class="sp-ends"><span>Flat hierarchy, boss is approachable (Denmark)</span><span>Seniority respected, hierarchy is clear (Thailand)</span></div>
+      </div>
+      <div class="spectrum">
+        <div class="sp-name">Individualism vs. Collectivism</div>
+        <div class="sp-track"><div class="sp-dot" style="left:72%;"></div></div>
+        <div class="sp-ends"><span>"I" decide alone (USA, Australia)</span><span>"We" decide together (Thailand)</span></div>
+      </div>
+      <div class="spectrum">
+        <div class="sp-name">Uncertainty Avoidance</div>
+        <div class="sp-track"><div class="sp-dot" style="left:64%;"></div></div>
+        <div class="sp-ends"><span>Comfortable with ambiguity, quick decisions</span><span>Needs clear rules, process, and time</span></div>
+      </div>
+      <div class="spectrum">
+        <div class="sp-name">Long-term vs. Short-term</div>
+        <div class="sp-track"><div class="sp-dot" style="left:55%;"></div></div>
+        <div class="sp-ends"><span>Quick results, transactional</span><span>Build slowly, trust before business</span></div>
+      </div>
+      <p>For the case work ahead, Power Distance and Uncertainty Avoidance matter most — they explain a lot of what looks like silence or hesitation in a meeting.</p>
+    </div>
+  </div>
+  <div class="quiz-zone">
+    <div class="wrap">
+      <div class="quiz-intro"><span class="pulse"></span>QUICK CHECK</div>
+      <div class="quiz-block" data-module="hofstede"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE: MEYER -->
+<section class="module" id="meyer">
+  <div class="wrap">
+    <div class="module-kicker">Framework 3</div>
+    <h2>Meyer — how do people behave at work?</h2>
+    <p class="module-lede">The Culture Map narrows the lens specifically to business communication — feedback, trust, and disagreement.</p>
+    <div class="module-body">
+      <div class="spectrum">
+        <div class="sp-name">Evaluating</div>
+        <div class="sp-track"><div class="sp-dot" style="left:72%;"></div></div>
+        <div class="sp-ends"><span>Direct negative feedback OK</span><span>Indirect negative feedback preferred</span></div>
+      </div>
+      <div class="spectrum">
+        <div class="sp-name">Trusting</div>
+        <div class="sp-track"><div class="sp-dot" style="left:68%;"></div></div>
+        <div class="sp-ends"><span>Task-based — earned through work</span><span>Relationship-based — earned through time</span></div>
+      </div>
+      <div class="spectrum">
+        <div class="sp-name">Disagreeing</div>
+        <div class="sp-track"><div class="sp-dot" style="left:75%;"></div></div>
+        <div class="sp-ends"><span>Confrontational, open debate OK</span><span>Avoids confrontation, harmony preferred</span></div>
+      </div>
+      <div class="callout navy"><strong class="label">Key insight</strong>Japan sits toward the right on almost every scale above. The UK and USA tend to sit toward the left. Neither position is wrong — they're reading from different scripts.</div>
+    </div>
+  </div>
+  <div class="quiz-zone">
+    <div class="wrap">
+      <div class="quiz-intro"><span class="pulse"></span>QUICK CHECK</div>
+      <div class="quiz-block" data-module="meyer"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE: DECISION RULE + CQ -->
+<section class="module" id="apply">
+  <div class="wrap">
+    <div class="module-kicker">Putting it together</div>
+    <h2>Which tool? Then what do you say?</h2>
+    <p class="module-lede">You don't need to run all three frameworks every time. Match the problem to the tool, then use four steps to respond well.</p>
+    <div class="module-body">
+      <div class="callout">
+        <strong class="label">NOT SURE WHICH TOOL TO USE?</strong>
+        <div class="rule-row"><div class="prob">The problem is about <strong>how</strong> something was said — direct, indirect, silence</div><div class="rule-tag" style="background:#0F2A43;">HALL</div></div>
+        <div class="rule-row"><div class="prob">The problem is about <strong>hierarchy</strong>, group decisions, or who can speak up</div><div class="rule-tag" style="background:#1F6F78;">HOFSTEDE</div></div>
+        <div class="rule-row"><div class="prob">The problem is about <strong>feedback</strong>, trust, or disagreement</div><div class="rule-tag" style="background:#9C7220;">MEYER</div></div>
+      </div>
+
+      <p style="margin-top:34px;"><strong>The four CQ steps</strong> — what to actually do once you suspect culture is the cause.</p>
+      <div class="cq-row">
+        <div class="cq-step"><div class="n">1</div><div class="name">Notice</div><div class="desc">Realise a culture difference might be the cause.</div></div>
+        <div class="cq-step"><div class="n">2</div><div class="name">Think</div><div class="desc">Decide which tool explains it.</div></div>
+        <div class="cq-step"><div class="n">3</div><div class="name">Adjust</div><div class="desc">Change how you communicate.</div></div>
+        <div class="cq-step"><div class="n">4</div><div class="name">Ask</div><div class="desc">Check with an open, face-saving question.</div></div>
+      </div>
+      <div class="callout gold"><strong class="label">Say this instead of guessing</strong>"I want to check I understood correctly — is this a small point, or something urgent we need to fix?"</div>
+    </div>
+  </div>
+  <div class="quiz-zone">
+    <div class="wrap">
+      <div class="quiz-intro"><span class="pulse"></span>QUICK CHECK</div>
+      <div class="quiz-block" data-module="apply"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MODULE: FINAL APPLICATION -->
+<section class="module" id="review">
+  <div class="wrap">
+    <div class="module-kicker">Final round</div>
+    <h2>Put it all together</h2>
+    <p class="module-lede">No new theory here — just three situations that mix everything you've covered. Take your time; there's no clock on this one.</p>
+  </div>
+  <div class="quiz-zone">
+    <div class="wrap">
+      <div class="quiz-intro"><span class="pulse"></span>APPLICATION &amp; REVIEW</div>
+      <div class="quiz-block" data-module="review"></div>
+    </div>
+  </div>
+</section>
+
+<!-- SUMMARY -->
+<section id="summary">
+  <div class="wrap-wide">
+    <div class="module-kicker">Done</div>
+    <h2>How it went</h2>
+    <div class="score-ring-wrap">
+      <svg id="score-ring" width="140" height="140" viewBox="0 0 140 140">
+        <circle cx="70" cy="70" r="60" fill="none" stroke="#D7E1E4" stroke-width="14"/>
+        <circle id="score-ring-fill" cx="70" cy="70" r="60" fill="none" stroke="#D9A441" stroke-width="14"
+          stroke-dasharray="377" stroke-dashoffset="377" stroke-linecap="round" transform="rotate(-90 70 70)"/>
+        <text id="score-ring-text" x="70" y="78" text-anchor="middle" font-family="Fraunces, serif" font-size="30" font-weight="700" fill="#16232C">0/24</text>
+      </svg>
+      <p class="score-line">Your running score updates as you answer — this just totals it up. If a module looks thin, that's the one worth rereading before class, not a grade.</p>
+    </div>
+    <div class="breakdown" id="breakdown"></div>
+    <button id="retake-btn">Start over</button>
+  </div>
+</section>
+
+<footer>Reading the Room — Intercultural Communication in Business</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  const MODULES = [
+    { id:"hook", name:"Warm-Up", questions:[
+      { q:"Look at the client's email above. What is it really saying?",
+        options:["Great news, let's prepare the contract","Maybe OK, but follow up soon","This is a polite rejection","Impossible to tell, need more info"],
+        correct:2,
+        explain:"The phrase \u201cwe will be in touch when the time is right\u201d is a classic high-context soft decline \u2014 it avoids a direct no while still closing the door. You'll see exactly why once you get to the Hall framework below." },
+    ]},
+    { id:"iceberg", name:"Iceberg", questions:[
+      { q:"Which of these sits BELOW the surface of the culture iceberg?",
+        options:["Food","Greetings","Attitudes to hierarchy","Clothing"],
+        correct:2,
+        explain:"Food, greetings, and clothing are all visible \u2014 easy to observe and describe. Attitudes to hierarchy are a value, invisible until they cause a misunderstanding." },
+      { q:"Most cross-cultural misunderstandings happen...",
+        options:["Above the surface, with visible things","Below the surface, with invisible values","Only with language mistakes","Completely at random"],
+        correct:1,
+        explain:"The visible layer rarely causes real conflict \u2014 it's the unstated rules about time, hierarchy, and disagreement that trip people up." },
+    ]},
+    { id:"hall", name:"Hall", questions:[
+      { q:"In a HIGH-CONTEXT culture, meaning is carried mainly by...",
+        options:["Explicit words only","Written contracts","Context, tone, and relationship","Legal documents"],
+        correct:2,
+        explain:"High-context communication leans on shared background, tone, and situation \u2014 the words alone are only part of the message." },
+      { q:"Which pair is LOW-context in Hall's framework?",
+        options:["Japan and Thailand","USA and Germany","China and Korea","Arab countries and Japan"],
+        correct:1,
+        explain:"USA and Germany are classic low-context cultures \u2014 meaning is expected to live in the words themselves." },
+      { q:"In a high-context culture, \u2018no\u2019 is usually communicated through...",
+        options:["A clear, direct statement","Total silence, nothing said at all","Hesitation, vagueness, or changing the topic","Email only"],
+        correct:2,
+        explain:"A direct \u2018no\u2019 can feel confrontational in high-context settings, so it often arrives disguised as hesitation or a change of subject." },
+      { q:"On Hall's scale, is Thailand generally high-context or low-context?",
+        options:["High-context","Low-context","Context doesn't apply to Thailand","It changes every year"],
+        correct:0,
+        explain:"Thailand sits firmly on the high-context side \u2014 relationship, tone, and what's left unsaid all carry real weight." },
+      { q:"Client writes \u2018we'll study this further\u2026 when the time is right.\u2019 In Hall's terms, this is...",
+        options:["Low-context directness","A high-context soft decline","A confirmed deal","A request for a discount"],
+        correct:1,
+        explain:"Same email from the warm-up \u2014 now you have the framework to name exactly what's happening: a polite, indirect no." },
+    ]},
+    { id:"hofstede", name:"Hofstede", questions:[
+      { q:"Hofstede's \u2018Power Distance\u2019 dimension measures...",
+        options:["How much people value money","How much hierarchy and seniority matter","How fast decisions are made","How people use silence"],
+        correct:1,
+        explain:"Power Distance is about how comfortable a culture is with unequal power \u2014 how much seniority and hierarchy shape everyday interaction." },
+      { q:"A COLLECTIVIST culture typically values...",
+        options:["Personal achievement above all","Deciding alone and fast","Group harmony and shared decisions","Ignoring the group's opinion"],
+        correct:2,
+        explain:"Collectivist cultures weigh group harmony and consensus heavily \u2014 decisions are rarely made by one person acting alone." },
+      { q:"High Uncertainty Avoidance cultures usually prefer...",
+        options:["Jumping in with no plan","Clear rules, process, and time before deciding","Total ambiguity","Skipping meetings entirely"],
+        correct:1,
+        explain:"High Uncertainty Avoidance cultures reduce anxiety through structure \u2014 rules, process, and enough time to feel confident before committing." },
+      { q:"On Power Distance, where does Thailand generally sit?",
+        options:["Very low, flat hierarchy","High, seniority matters a lot","Not applicable to Thailand","Identical to Denmark"],
+        correct:1,
+        explain:"Thailand sits high on Power Distance \u2014 seniority and rank shape who speaks, and when." },
+      { q:"A director asks \u2018any concerns?\u2019 and gets silence, though someone disagrees. Best explanation?",
+        options:["Everyone genuinely agreed","High power distance made speaking up feel risky","The team wasn't listening","The plan truly had no flaws"],
+        correct:1,
+        explain:"In a high Power Distance setting, publicly contradicting someone senior can feel disrespectful \u2014 so silence isn't agreement, it's caution." },
+    ]},
+    { id:"meyer", name:"Meyer", questions:[
+      { q:"Meyer's \u2018Evaluating\u2019 scale is mainly about...",
+        options:["How feedback is given, direct or indirect","How people dress at work","How long meetings last","How salaries are decided"],
+        correct:0,
+        explain:"Evaluating is specifically about negative feedback \u2014 whether it's delivered bluntly or softened and indirect." },
+      { q:"On Meyer's Trusting scale, \u2018relationship-based\u2019 cultures believe trust is earned through...",
+        options:["Fast results only","Time spent together","Job titles","Written contracts alone"],
+        correct:1,
+        explain:"Relationship-based trust builds slowly, through shared time and personal connection, rather than through a single successful transaction." },
+      { q:"On Meyer's Disagreeing scale, \u2018avoids confrontation\u2019 means...",
+        options:["Open public debate is normal","Harmony is preferred over direct conflict","Disagreement never happens at all","Everyone must vote"],
+        correct:1,
+        explain:"Avoiding confrontation doesn't mean people never disagree \u2014 it means disagreement is expressed carefully, to protect the relationship." },
+      { q:"A German manager gives blunt public feedback; a Thai colleague looks shocked. Best Meyer lens?",
+        options:["Persuading","Evaluating","Scheduling","Deciding"],
+        correct:1,
+        explain:"This is squarely an Evaluating mismatch \u2014 Germany sits toward direct feedback, Thailand toward indirect, and the gap is what caused the shock." },
+    ]},
+    { id:"apply", name:"Decision Rule & CQ", questions:[
+      { q:"The problem is about HOW something was said. Which tool fits best?",
+        options:["Hall","Hofstede","Meyer","None of these"],
+        correct:0,
+        explain:"Directness, silence, and implication are exactly what Hall's high/low-context framework is built to explain." },
+      { q:"The problem is about hierarchy or who is allowed to speak up. Which tool fits best?",
+        options:["Hall","Hofstede","Meyer","CQ"],
+        correct:1,
+        explain:"That's Power Distance territory \u2014 Hofstede's dimension for hierarchy and who gets to speak." },
+      { q:"What is the correct order of the four CQ steps?",
+        options:["Ask, Think, Notice, Adjust","Notice, Think, Adjust, Ask","Adjust, Notice, Ask, Think","Think, Notice, Ask, Adjust"],
+        correct:1,
+        explain:"Notice the gap, Think about which framework explains it, Adjust your approach, then Ask a clarifying question." },
+      { q:"A good CQ \u2018Ask\u2019 step sounds like...",
+        options:["\u2018You clearly misunderstood me.\u2019","\u2018Let's just forget it.\u2019","\u2018I want to check I understood \u2014 is this urgent?\u2019","Saying nothing at all"],
+        correct:2,
+        explain:"A good Ask step is open and face-saving \u2014 it invites clarification without putting anyone on the spot." },
+    ]},
+    { id:"review", name:"Application & Review", questions:[
+      { q:"A Japanese client goes silent after you ask for \u2018a quick decision by Friday.\u2019 Likely cause?",
+        options:["They are ignoring you on purpose","High uncertainty avoidance plus a need for consensus","They already said no in writing","Time zone confusion"],
+        correct:1,
+        explain:"A fast, individual decision clashes with both high Uncertainty Avoidance and a collectivist, consensus-driven process \u2014 silence buys time to align internally, not an insult." },
+      { q:"A Korean client says \u2018very creative, we'll discuss internally\u2019 then changes topic. This is...",
+        options:["An enthusiastic yes","A likely soft decline that needs patience","A request for more money","An insult"],
+        correct:1,
+        explain:"Same pattern as the warm-up email \u2014 praise plus a vague deferral plus a topic change is a well-worn high-context way of softening a no." },
+      { q:"Which statement best reflects this module's key takeaway?",
+        options:["Direct is always clearer than indirect","Indirect cultures are less honest","No communication style is \u2018better,\u2019 they evolved differently","Frameworks predict exactly what any person will do"],
+        correct:2,
+        explain:"That's the whole point of the module: these are different, equally valid scripts \u2014 not a hierarchy of better and worse communicators." },
+    ]},
+  ];
+
+  const state = {};
+  MODULES.forEach(m => state[m.id] = new Array(m.questions.length).fill(null));
+
+  const TOTAL = MODULES.reduce((sum,m)=>sum+m.questions.length,0);
+  const letters = ["A","B","C","D"];
+
+  function renderQuiz(){
+    MODULES.forEach(mod => {
+      const holder = document.querySelector('.quiz-block[data-module="'+mod.id+'"]');
+      if(!holder) return;
+      mod.questions.forEach((q, qi) => {
+        const card = document.createElement('div');
+        card.className = 'q-card';
+        const qText = document.createElement('div');
+        qText.className = 'q-text';
+        qText.textContent = q.q;
+        card.appendChild(qText);
+
+        const optWrap = document.createElement('div');
+        optWrap.className = 'q-options';
+        q.options.forEach((opt, oi) => {
+          const btn = document.createElement('button');
+          btn.className = 'q-option';
+          btn.type = 'button';
+          btn.innerHTML = '<span class="letter">'+letters[oi]+'</span><span>'+opt+'</span>';
+          btn.addEventListener('click', () => handleAnswer(mod.id, qi, oi, card));
+          optWrap.appendChild(btn);
+        });
+        card.appendChild(optWrap);
+
+        const fb = document.createElement('div');
+        fb.className = 'q-feedback';
+        card.appendChild(fb);
+
+        holder.appendChild(card);
+      });
+    });
+  }
+
+  function handleAnswer(modId, qi, oi, card){
+    if(state[modId][qi] !== null) return; // already answered
+    const mod = MODULES.find(m=>m.id===modId);
+    const q = mod.questions[qi];
+    state[modId][qi] = oi;
+
+    const buttons = card.querySelectorAll('.q-option');
+    buttons.forEach((b, i) => {
+      b.disabled = true;
+      if(i === q.correct) b.classList.add('correct');
+      else if(i === oi) b.classList.add('incorrect');
+      else b.classList.add('faded');
+    });
+
+    const fb = card.querySelector('.q-feedback');
+    const isRight = oi === q.correct;
+    fb.classList.add('show', isRight ? 'right' : 'wrong');
+    fb.innerHTML = '<strong>' + (isRight ? 'Correct. ' : 'Not quite. ') + '</strong>' + q.explain;
+
+    updateScore();
+  }
+
+  function updateScore(){
+    let answered = 0, correct = 0;
+    MODULES.forEach(m => {
+      state[m.id].forEach((val, i) => {
+        if(val !== null){
+          answered++;
+          if(val === m.questions[i].correct) correct++;
+        }
+      });
+    });
+    const badge = document.getElementById('score-badge');
+    document.getElementById('score-badge-text').textContent = 'Score: ' + correct + ' / ' + TOTAL;
+    if(answered > 0) badge.classList.add('show');
+
+    // ring
+    const circumference = 2 * Math.PI * 60;
+    const frac = TOTAL ? correct / TOTAL : 0;
+    const ring = document.getElementById('score-ring-fill');
+    ring.setAttribute('stroke-dasharray', circumference.toFixed(1));
+    ring.setAttribute('stroke-dashoffset', (circumference * (1 - frac)).toFixed(1));
+    document.getElementById('score-ring-text').textContent = correct + '/' + TOTAL;
+
+    // breakdown
+    const bd = document.getElementById('breakdown');
+    bd.innerHTML = '';
+    MODULES.forEach(m => {
+      const total = m.questions.length;
+      const got = state[m.id].reduce((s,val,i)=> s + (val===m.questions[i].correct ? 1 : 0), 0);
+      const answeredHere = state[m.id].filter(v=>v!==null).length;
+      const pct = total ? (got/total*100) : 0;
+      const row = document.createElement('div');
+      row.className = 'breakdown-row';
+      row.innerHTML = '<div class="bname">'+m.name+'</div><div class="btrack"><div class="bfill" style="width:'+pct+'%;"></div></div><div class="bscore">'+got+' / '+total+'</div>';
+      bd.appendChild(row);
+    });
+  }
+
+  function updateProgressBar(){
+    const h = document.documentElement;
+    const scrollTop = h.scrollTop || document.body.scrollTop;
+    const scrollHeight = (h.scrollHeight || document.body.scrollHeight) - h.clientHeight;
+    const pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    document.getElementById('progress-fill').style.width = pct + '%';
+  }
+
+  document.getElementById('retake-btn').addEventListener('click', () => {
+    location.reload();
+  });
+
+  window.addEventListener('scroll', updateProgressBar, { passive:true });
+  renderQuiz();
+  updateScore();
+  updateProgressBar();
+})();
+</script>
+
+</body>
+</html>
